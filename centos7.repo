@@ -1,0 +1,6 @@
+[centos]
+name=CentOS
+baseurl=http://buildlogs.centos.org/centos/7/os/x86_64-20140625
+enabled=0
+gpgcheck=0
+

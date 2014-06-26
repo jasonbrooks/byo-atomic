@@ -1,0 +1,6 @@
+[walters-cockpit-el7]
+name=Copr repo for cockpit-el7 owned by walters
+baseurl=http://copr-be.cloud.fedoraproject.org/results/walters/cockpit-el7/epel-7-$basearch/
+skip_if_unavailable=True
+gpgcheck=0
+enabled=1
