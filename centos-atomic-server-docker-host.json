@@ -5,7 +5,7 @@
 
     "packages": ["@standard", "cockpit", "geard", "docker-io",
                  "selinux-policy-targeted",
-                 "min-cloud-agent", "openssh-server", 
+                 "cloud-init", "openssh-server", 
                  "openssh-clients",
                  "cockpit", "passwd",
                  "NetworkManager", "vim-minimal", "nano",

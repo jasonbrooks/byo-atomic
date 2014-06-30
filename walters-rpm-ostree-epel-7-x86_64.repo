@@ -4,3 +4,4 @@ baseurl=http://copr-be.cloud.fedoraproject.org/results/walters/rpm-ostree/epel-7
 skip_if_unavailable=True
 gpgcheck=0
 enabled=1
+protect=1
