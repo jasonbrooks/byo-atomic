@@ -1,0 +1,29 @@
+[updates]
+name=Fedora $releasever - $basearch - Updates
+failovermethod=priority
+#baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/$releasever/$basearch/
+metalink=https://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+skip_if_unavailable=False
+
+[updates-debuginfo]
+name=Fedora $releasever - $basearch - Updates - Debug
+failovermethod=priority
+#baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/$releasever/$basearch/debug/
+metalink=https://mirrors.fedoraproject.org/metalink?repo=updates-released-debug-f$releasever&arch=$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+skip_if_unavailable=False
+
+[updates-source]
+name=Fedora $releasever - Updates Source
+failovermethod=priority
+#baseurl=http://download.fedoraproject.org/pub/fedora/linux/updates/$releasever/SRPMS/
+metalink=https://mirrors.fedoraproject.org/metalink?repo=updates-released-source-f$releasever&arch=$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+skip_if_unavailable=False

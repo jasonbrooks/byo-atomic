@@ -1,0 +1,20 @@
+{
+    "comment": "Default/demo trees generated for Fedora Atomic",
+
+    "osname": "fedora-atomic",
+    "ref": "fedora-atomic/7/x86_64/base",
+    
+    "repos": ["fedora", "fedora-updates", "fedora-updates-testing", "walters-rpm-ostree"],
+
+    "selinux": true,
+
+    "bootstrap_packages": ["filesystem", "glibc", "nss-altfiles", "shadow-utils",
+			   "generic-release"],
+
+    "packages": ["kernel", "rpm-ostree", "lvm2",
+		 "btrfs-progs", "e2fsprogs", "xfsprogs",
+		 "syslinux-extlinux", "authconfig",
+		 "gnupg2", "@core"],
+
+    "default_target": "multi-user.target"
+}
