@@ -1,11 +1,11 @@
-c7-atomic
-=========
+byo atomic images
+================
 
-Build a centos 7-based atomic host, rough directions
+Build a CentOS 7 or Fedora 20-based atomic host, rough directions
 
 First, build the builder:
 
-* install Fedora 20
+* install Fedora 20 (c7 should work, too, but I've found f20 to be more nested-virt friendly -- these tools use kvm during the image-building process, and if your builder is a VM, like mine is, you'll be tangling w/ nested virt.)
 * disable selinux by changing `enforced` to `disabled` in `/etc/selinux/config` and then `systemctl reboot` to complete selinux disabling
 * the rpm-ostree commands need to be run as root or w/ sudo, but for some reason, the image-building part of the process is only working for me while running as root (not sudo), so I log in as root and work in `/root`
 * `sudo yum install -y git`
