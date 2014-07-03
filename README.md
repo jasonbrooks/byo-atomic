@@ -48,7 +48,10 @@ firewall-cmd --add-service=http --permanent
 
 ## Next, build the Atomic host:
 
-The *.json files in the c7 and f20 directories contain the definitions for these Atomic hosts. 
+The *.json files in the c7 and f20 directories contain the definitions for these Atomic hosts. The *-atomic-base.json file contains the list of repositories to include. The git repo I've pointed to includes the *.repo files you need. If you wish to add others, put them in the c7 or f20 folder and reference them in centos-atomic-base.json or fedora-atomic-base.json.
+
+The *-atomic-server-docker-host.json files pull in the base json files, and add additional packages. To add or remove packages, edit fedora-atomic-server-docker-host.json or centos-atomic-server-docker-host.json.
+
 
 ### For CentOS 7:
 
@@ -106,7 +109,7 @@ For more information about creating these cloud-init iso images, see http://clou
 
 ### What's my IP address?
 
-If, once you've launced your Atomic image, you need to find out what IP address it's been assigned, check out this blog post: http://rwmj.wordpress.com/2010/10/26/tip-find-the-ip-address-of-a-virtual-machine/ for more info.
+If, once you've launced your Atomic image, you need to find out what IP address it's been assigned, check out this [blog post](http://rwmj.wordpress.com/2010/10/26/tip-find-the-ip-address-of-a-virtual-machine/) for some pointers.
 
 ### Configuring your Atomic instance to receive updates
 
