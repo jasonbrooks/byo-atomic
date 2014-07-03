@@ -1,7 +1,7 @@
 {
     "include": "fedora-atomic-base.json",
 
-    "ref": "fedora-atomic/7/x86_64/server/docker-host",
+    "ref": "fedora-atomic/20/x86_64/server/docker-host",
 
     "packages": ["@standard", "cockpit", "geard", "docker-io",
                  "selinux-policy-targeted",

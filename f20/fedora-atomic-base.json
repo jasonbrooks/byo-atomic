@@ -2,9 +2,9 @@
     "comment": "Default/demo trees generated for Fedora Atomic",
 
     "osname": "fedora-atomic",
-    "ref": "fedora-atomic/7/x86_64/base",
+    "ref": "fedora-atomic/20/x86_64/base",
     
-    "repos": ["fedora", "fedora-updates", "fedora-updates-testing", "walters-rpm-ostree"],
+    "repos": ["fedora", "updates", "updates-testing", "walters-rpm-ostree"],
 
     "selinux": true,
 
