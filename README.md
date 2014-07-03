@@ -26,8 +26,8 @@ The rpm-ostree commands need to be run as root or w/ sudo, but for some reason, 
 Now, we'll set up a repository from which our eventual Atomic hosts will fetch upgrades:
 
 ````
-mkdir -p /srv/rpm-ostree/repo && cd /srv/rpm-ostree/ && sudo ostree --repo=repo init --mode=archive-z2`
-cat > /etc/httpd/conf.d/rpm-ostree.conf <<EOF
+# mkdir -p /srv/rpm-ostree/repo && cd /srv/rpm-ostree/ && sudo ostree --repo=repo init --mode=archive-z2
+# cat > /etc/httpd/conf.d/rpm-ostree.conf <<EOF
 DocumentRoot /srv/rpm-ostree
 <Directory "/srv/rpm-ostree">
 Options Indexes FollowSymLinks
@@ -35,7 +35,7 @@ AllowOverride None
 Require all granted
 </Directory>
 EOF
-systemctl daemon-reload &&
+# systemctl daemon-reload &&
 systemctl enable httpd &&
 systemctl start httpd &&
 systemctl reload httpd &&
@@ -48,17 +48,21 @@ firewall-cmd --add-service=http --permanent
 For CentOS 7:
 
 ````
-cd /root/byo-atomic/c7
-rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
-rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos-atomic/7/x86_64/server/docker-host c7-atomic.qcow2
+# cd /root/byo-atomic/c7
+
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
+
+# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos-atomic/7/x86_64/server/docker-host c7-atomic.qcow2
 ````
 
 For Fedora 20:
 
 ````
-cd /root/byo-atomic/f20
-rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-server-docker-host.json
-rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2
+# cd /root/byo-atomic/f20
+
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-server-docker-host.json
+
+# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2
 ````
 
 After you've created your image(s), future runs of the `rpm-ostree compose tree` command will add updated packages to your repo, which you can pull down to an Atomic instance. For more information on updating, see "Configuring your Atomic instance to receive updates," below.
