@@ -3,9 +3,9 @@ Build Your Own Atomic Image, Updated
 
 When [Project Atomic](http://www.projectatomic.io) got off the ground in April, I wrote a [blog post](http://www.projectatomic.io/blog/2014/04/build-your-own-atomic-host-on-fedora-20/) about how anyone could Build Your Own Atomic host, based on Fedora 20. Since that time, there have been some changes in the rpm-ostree tooling used to produce these images. 
 
-What's more, there's a new distro around the corner, [CentOS 7](http://seven.centos.org), that you may wish to build into an Atomic host. Part of what's great about the Atomic model is the way it can apply to different distributions. Here's our chance to play with that.
+What's more, there's a new distro on the block, [CentOS 7](http://seven.centos.org), that you may wish to build into an Atomic host. Part of what's great about the Atomic model is the way it can apply to different distributions. Here's our chance to play with that.
 
-Here's an updated guide to building your own Atomic host(s), based on Fedora 20 or on (the currently pre-release) CentOS 7.
+Here's an updated guide to building your own Atomic host(s), based on Fedora 20 or on CentOS 7.
 
 ## First, build and configure the builder:
 

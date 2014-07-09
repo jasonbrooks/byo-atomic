@@ -4,7 +4,7 @@
     "osname": "centos-atomic",
     "ref": "centos-atomic/7/x86_64/base",
     
-    "repos": ["centos", "walters-rpm-ostree", "walters-cockpit-el7", "epel", "jasonbrooks-c7-atomic"],
+    "repos": ["base", "updates," "extras," "centosplus," "walters-rpm-ostree", "walters-cockpit-el7", "epel", "jasonbrooks-c7-atomic"],
 
     "selinux": true,
 
