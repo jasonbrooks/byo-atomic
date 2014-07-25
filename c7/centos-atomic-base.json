@@ -4,17 +4,27 @@
     "osname": "centos-atomic",
     "ref": "centos-atomic/7/x86_64/base",
     
-    "repos": ["base", "updates," "extras," "centosplus," "walters-rpm-ostree", "walters-cockpit-el7", "epel", "jasonbrooks-c7-atomic"],
+    "repos": ["base", "updates," "extras," "centosplus," "walters-rpm-ostree", "epel", "maxamillion-epel7-cockpit"],
 
     "selinux": true,
 
     "bootstrap_packages": ["filesystem", "glibc", "nss-altfiles", "shadow-utils",
 			   "centos-release"],
 
-    "packages": ["kernel", "rpm-ostree", "lvm2",
+    "packages": ["kernel", "rpm-ostree", "lvm2", "syslinux-extlinux",
 		 "btrfs-progs", "e2fsprogs", "xfsprogs",
-		 "syslinux-extlinux", "authconfig",
-		 "gnupg2", "@core"],
+		 "docker-io",
+		 "selinux-policy-targeted",
+		 "audit",
+		 "sssd",
+		 "cloud-init",
+		 "tar",
+		 "openssh-server", "openssh-clients",
+		 "passwd",
+		 "NetworkManager", "vim-minimal", "nano",
+		 "sudo"],
+
+    "units": ["docker.service"],
 
     "default_target": "multi-user.target"
 }

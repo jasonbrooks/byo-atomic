@@ -3,22 +3,15 @@
 
     "ref": "centos-atomic/7/x86_64/server/docker-host",
 
-    "packages": ["@standard", "cockpit", "geard", "docker-io",
-                 "selinux-policy-targeted",
-                 "cloud-init", "openssh-server", 
-                 "openssh-clients",
-                 "cockpit", "passwd",
-                 "NetworkManager", "vim-minimal", "nano",
-                 "man-db", "man-pages", "bash-completion",
-                 "rsync", "tmux",
-                 "net-tools", "nmap-ncat",
-                 "policycoreutils-python",
-                 "setools-console", "screen",
-                 "audit", "system-storage-manager",
-                 "sudo", "geard", "selinux-policy-devel",
-                 "sssd", "tuned", "storaged", "tar",
-                 "bind-utils", "git", "sysstat"],
+    "packages": ["cockpit", "tuned", "geard",
+		 "man-db", "man-pages", "bash-completion",
+		 "rsync", "tmux",
+		 "net-tools", "nmap-ncat",
+		 "bind-utils", "git",
+		 "sysstat",
+		 "policycoreutils-python",
+		 "setools-console",
+		 "audit"],
 
-    "units": ["docker.service", "docker.socket",
-	      "geard.service", "cockpit.socket"]
+    "units": ["geard.service", "cockpit.socket"]
 }
