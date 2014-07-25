@@ -1,6 +1,0 @@
-[jasonbrooks-c7-atomic]
-name=Copr repo for c7-atomic owned by jasonbrooks
-baseurl=http://copr-be.cloud.fedoraproject.org/results/jasonbrooks/c7-atomic/epel-7-$basearch/
-skip_if_unavailable=True
-gpgcheck=0
-enabled=1
