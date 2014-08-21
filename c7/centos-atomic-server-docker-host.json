@@ -3,7 +3,7 @@
 
     "ref": "centos-atomic/7/x86_64/server/docker-host",
 
-    "packages": ["cockpit", "tuned", "geard",
+    "packages": ["cockpit", "tuned",
 		 "man-db", "man-pages", "bash-completion",
 		 "rsync", "tmux",
 		 "net-tools", "nmap-ncat",

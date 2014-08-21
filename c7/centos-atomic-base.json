@@ -13,7 +13,7 @@
 
     "packages": ["kernel", "rpm-ostree", "lvm2", "syslinux-extlinux",
 		 "btrfs-progs", "e2fsprogs", "xfsprogs",
-		 "docker-io",
+		 "docker",
 		 "selinux-policy-targeted",
 		 "audit",
 		 "sssd",
