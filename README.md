@@ -1,19 +1,19 @@
 Build Your Own Atomic Image, Updated
 ================
 
-When [Project Atomic](http://www.projectatomic.io) got off the ground in April, I wrote a [blog post](http://www.projectatomic.io/blog/2014/04/build-your-own-atomic-host-on-fedora-20/) about how anyone could Build Your Own Atomic host, based on Fedora 20. Since that time, there have been some changes in the rpm-ostree tooling used to produce these images. 
+When [Project Atomic](http://www.projectatomic.io) got off the ground in April, I wrote a [blog post](http://www.projectatomic.io/blog/2014/04/build-your-own-atomic-host-on-fedora-20/) about how anyone could Build Your Own Atomic host, based on Fedora 20. Since that time, there have been some changes in the rpm-ostree tooling used to produce these images.
 
 What's more, there's a new distro on the block, [CentOS 7](http://seven.centos.org), that you may wish to build into an Atomic host. Part of what's great about the Atomic model is the way it can apply to different distributions. Here's our chance to play with that.
 
-Here's an updated guide to building your own Atomic host(s), based on Fedora 20 or on CentOS 7.
+The tooling around creating Atomic images is still in flux, and will continue to change (for the better). For now, tough, here's an updated guide to building your own Atomic host(s), based on Fedora 20 or on CentOS 7.
 
 ## First, build and configure the builder:
 
-Install Fedora 20 (CentOS 7 should work, too, but I've found Fedora to be more nested-virt friendly. The rpm-ostree tools use kvm during the image-building process, and if your builder is a VM, like mine is, you'll be tangling w/ nested virt.)
+Install Fedora 20 (CentOS 7 can work, too, with some tweaking, but here I'm stick with Fedora). You can build trees and images for Fedora or CentOS from the same builder.
 
 Disable selinux by changing `enforced` to `disabled` in `/etc/selinux/config` and then `systemctl reboot` to complete selinux disabling. While we're never happy about disabling SELinux, it's necessary ([for now](https://bugzilla.redhat.com/show_bug.cgi?id=1060423)) to disable it on your builder in order to enable it on the Atomic instances you build.
 
-The rpm-ostree commands need to be run as root or w/ sudo, but for some reason, the image-building part of the process is only working for me while running as root (not sudo), so I log in as root and work in `/root`.
+The rpm-ostree commands below need to be run as root or w/ sudo, but for some reason, the image-building part of the process is only working for me while running as root (not sudo), so I log in as root and work in `/root`.
 
 ````
 # yum install -y git
@@ -71,11 +71,15 @@ The *-atomic-server-docker-host.json files pull in the base json files, and add 
 
 After you've created your image(s), future runs of the `rpm-ostree compose tree` command will add updated packages to your repo, which you can pull down to an Atomic instance. For more information on updating, see "Configuring your Atomic instance to receive updates," below.
 
+### Converting images to .vdi (if desired)
+
 These scripts produce qcow2 images, which are ready to use with OpenStack or with virt-manager/virsh. To produce *.vdi images, use qemu-img to convert:
 
 `qemu-img convert -f qcow2 c7-atomic.qcow2 -O vdi c7-atomic.vdi`
 
-The atomic images are born with no root password, so it's necessary to supply a password or key to log in using cloud-init. If you're using a virtualization application without cloud-init support, such as virt-manager or VirtualBox, you can create a simple iso image to provide a key or password to your image when it boots.
+### How to log in?
+
+Your atomic images will be born with no root password, so it's necessary to supply a password or key to log in using cloud-init. If you're using a virtualization application without cloud-init support, such as virt-manager or VirtualBox, you can create a simple iso image to provide a key or password to your image when it boots.
 
 To create this iso image, you must first create two text files.
 
@@ -106,10 +110,6 @@ Once you have completed your files, they need to packaged into an ISO image. For
 You can boot from this iso image, and the auth details it contains will be passed along to your Atomic instance.
 
 For more information about creating these cloud-init iso images, see http://cloudinit.readthedocs.org/en/latest/topics/datasources.html#config-drive.
-
-### What's my IP address?
-
-If, once you've launced your Atomic image, you need to find out what IP address it's been assigned, check out this [blog post](http://rwmj.wordpress.com/2010/10/26/tip-find-the-ip-address-of-a-virtual-machine/) for some pointers.
 
 ### Configuring your Atomic instance to receive updates
 
