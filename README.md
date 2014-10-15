@@ -22,8 +22,6 @@ The rpm-ostree commands below need to be run as root or w/ sudo, but for some re
 # yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd
 ````
 
-Then, edit `/etc/libvirt/qemu.conf` to uncomment the line `user = "root"` and `systemctl restart libvirtd`.
-
 Now, we'll set up a repository from which our eventual Atomic hosts will fetch upgrades:
 
 ````
@@ -56,6 +54,7 @@ The *-atomic-server-docker-host.json files pull in the base json files, and add 
 ````
 # cd /root/byo-atomic/c7
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
+# export LIBGUESTFS_BACKEND=direct
 # rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos-atomic/7/x86_64/server/docker-host c7-atomic.qcow2
 ````
 
@@ -64,6 +63,7 @@ The *-atomic-server-docker-host.json files pull in the base json files, and add 
 ````
 # cd /root/byo-atomic/f20
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-server-docker-host.json
+# export LIBGUESTFS_BACKEND=direct
 # rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2
 ````
 
