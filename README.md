@@ -22,8 +22,6 @@ The rpm-ostree commands below need to be run as root or w/ sudo, but for some re
 # yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd
 ````
 
-Now, edit `/etc/nsswitch.conf` change lines `passwd: files` and `group: files` to `passwd: files altfiles` and `group: files altfiles` [(details)](https://github.com/projectatomic/rpm-ostree).
-
 Then, edit `/etc/libvirt/qemu.conf` to uncomment the line `user = "root"` and `systemctl restart libvirtd`.
 
 Now, we'll set up a repository from which our eventual Atomic hosts will fetch upgrades:
