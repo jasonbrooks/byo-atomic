@@ -16,7 +16,7 @@ Disable selinux by changing `enforced` to `disabled` in `/etc/selinux/config` an
 The rpm-ostree commands below need to be run as root or w/ sudo, but for some reason, the image-building part of the process is only working for me while running as root (not sudo), so I log in as root and work in `/root`.
 
 ````
-# yum install -y git
+# yum install -y git 
 # git clone https://github.com/jasonbrooks/byo-atomic.git
 # mv byo-atomic/walters-rpm-ostree-fedora-20-i386.repo /etc/yum.repos.d/
 # yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd

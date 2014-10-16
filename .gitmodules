@@ -1,0 +1,6 @@
+[submodule "sig-atomic-buildscripts"]
+	path = sig-atomic-buildscripts
+	url = https://github.com/CentOS/sig-atomic-buildscripts.git
+[submodule "fedora-atomic"]
+	path = fedora-atomic
+	url = https://git.fedorahosted.org/git/fedora-atomic.git
