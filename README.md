@@ -1,15 +1,62 @@
-Build Your Own Atomic Image, Updated
+Build Your Own Atomic
 ================
 
-When [Project Atomic](http://www.projectatomic.io) got off the ground in April, I wrote a [blog post](http://www.projectatomic.io/blog/2014/04/build-your-own-atomic-host-on-fedora-20/) about how anyone could Build Your Own Atomic host, based on Fedora 20. Since that time, there have been some changes in the rpm-ostree tooling used to produce these images.
+If you'd like to:
 
-What's more, there's a new distro on the block, [CentOS 7](http://seven.centos.org), that you may wish to build into an Atomic host. Part of what's great about the Atomic model is the way it can apply to different distributions. Here's our chance to play with that.
+* Build your own copy of the Atomic Fedora or Atomic CentOS test images, or
+* Compose and serve up updates or different package sets for an Atomic host...
 
-The tooling around creating Atomic images is still in flux, and will continue to change (for the better). For now, tough, here's an updated guide to building your own Atomic host(s), based on Fedora 20 or on CentOS 7.
+...then might be the howto for you.
 
-## First, build and configure the builder:
+Atomic hosts are made of regular, already-built RPMs, composed into trees with rpm-ostree. These trees are built into qcow2 images (or into installable ISOs, but I'm not covering that here, yet).
 
-Install Fedora 20 (CentOS 7 can work, too, with some tweaking, but here I'm stick with Fedora). You can build trees and images for Fedora or CentOS from the same builder.
+Once up and running, an Atomic host can be updated by pointing to an updated tree. (If the update isn't satisfactory, you can then roll back, atomicly)
+
+You don't have to build your own qcow2 to have a custom Atomic host. You can compose your own updates and apply them, or even rebase to a completely different tree. (I've rebased between CentOS and Fedora, for instance)
+
+If you're going to start with an existing Atomic host (for instance, one installed from this or that image), you can compose and serve up a new tree from a Docker container. 
+
+## Composing and hosting atomic updates 
+
+````
+# git clone --recursive https://github.com/jasonbrooks/byo-atomic.git
+# docker build --rm -t $USER/atomicrepo byo-atomic/.
+# docker run -ti -p 80:10080 $USER/atomicrepo bash
+````
+
+Once inside the container:
+
+````
+# cd /byo-atomic/c7
+````
+
+If you'd like to add some more packages to your tree, add them in the file `centos-atomic-cloud-docker-host.json` before proceeding with the compose command:
+
+````
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-cloud-docker-host.json
+````
+
+The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
+
+````
+# sh /run-apache.sh
+````
+
+Now, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
+
+````
+[remote "centos-atomic-host"]
+url=http://$YOURHOSTIP:10080/repo
+branches=centos/7/x86_64/cloud-docker-host;
+gpg-verify=false
+````
+
+With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
+
+
+## Optional: Create your own Atomic image
+
+First, build and configure the builder. Install Fedora 21 (Fedora 20 or CentOS 7 can work, too, but F21 includes the rpm-ostree packages we need by default, now, so that's what I'm using here). You can build trees and images for Fedora or CentOS from the same builder, and the versions don't have to match.
 
 Disable selinux by changing `enforced` to `disabled` in `/etc/selinux/config` and then `systemctl reboot` to complete selinux disabling. While we're never happy about disabling SELinux, it's necessary ([for now](https://bugzilla.redhat.com/show_bug.cgi?id=1060423)) to disable it on your builder in order to enable it on the Atomic instances you build.
 
@@ -17,8 +64,7 @@ The rpm-ostree commands below need to be run as root or w/ sudo, but for some re
 
 ````
 # yum install -y git 
-# git clone https://github.com/jasonbrooks/byo-atomic.git
-# mv byo-atomic/walters-rpm-ostree-fedora-20-i386.repo /etc/yum.repos.d/
+# git clone --recursive https://github.com/jasonbrooks/byo-atomic.git
 # yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd
 ````
 
@@ -42,27 +88,36 @@ firewall-cmd --add-service=http &&
 firewall-cmd --add-service=http --permanent
 ````
 
-## Next, build the Atomic host:
+Next, we compose a tree for our Atomic host image:
 
-The *.json files in the c7 and f20 directories contain the definitions for these Atomic hosts. The *-atomic-base.json file contains the list of repositories to include. The git repo I've pointed to includes the *.repo files you need. If you wish to add others, put them in the c7 or f20 folder and reference them in centos-atomic-base.json or fedora-atomic-base.json.
-
-The *-atomic-server-docker-host.json files pull in the base json files, and add additional packages. To add or remove packages, edit fedora-atomic-server-docker-host.json or centos-atomic-server-docker-host.json.
-
+This repository includes submodules that provide the *.json files maintained by the Fedora Cloud SIG (keeper of the Atomic Fedora definition) and the Atomic CentOS SIG. If you'd like to add some more packages to your tree, add them in the file `sig-atomic-buildscripts/centos-atomic-cloud-docker-host.json` or `fedora-atomic/fedora-atomic-docker-host.json` before proceeding.
 
 ### For CentOS 7:
 
 ````
+# cp /root/byo-atomic/sig-atomic-buildscripts/*.json /root/byo-atomic/c7/
 # cd /root/byo-atomic/c7
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
+````
+
+This step will take a while to complete. When it's finished, you can move on to creating the disk image:
+
+````
 # export LIBGUESTFS_BACKEND=direct
-# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos-atomic/7/x86_64/server/docker-host c7-atomic.qcow2
+# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos/7/atomic/x86_64/cloud-docker-host centos-atomic.qcow2
 ````
 
-### For Fedora 20:
+### For Fedora Rawhide:
 
 ````
+# cp /root/byo-atomic/fedora-atomic/*.json /root/byo-atomic/f20/
 # cd /root/byo-atomic/f20
-# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-server-docker-host.json
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-docker-host.json
+````
+
+This step will take a while to complete. When it's finished, you can move on to creating the disk image:
+
+````
 # export LIBGUESTFS_BACKEND=direct
 # rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2
 ````
@@ -74,6 +129,7 @@ After you've created your image(s), future runs of the `rpm-ostree compose tree`
 These scripts produce qcow2 images, which are ready to use with OpenStack or with virt-manager/virsh. To produce *.vdi images, use qemu-img to convert:
 
 `qemu-img convert -f qcow2 c7-atomic.qcow2 -O vdi c7-atomic.vdi`
+
 
 ### How to log in?
 
@@ -130,9 +186,6 @@ gpg-verify=false
 
 With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
 
-## Till Next Time
-
-If you run into trouble following this walkthrough, I’ll be happy to help you get up and running or get pointed in the right direction. Ping me at jbrooks in #atomic on freenode irc or [@jasonbrooks](https://twitter.com/jasonbrooks) on Twitter. Also, be sure to check out the [Project Atomic Q&A site](http://ask.projectatomic.io/en/questions/).
 
 
 
