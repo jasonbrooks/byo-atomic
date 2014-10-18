@@ -6,7 +6,7 @@ If you'd like to:
 * Build your own copy of the Atomic Fedora or Atomic CentOS test images, or
 * Compose and serve up updates or different package sets for an Atomic host...
 
-...then might be the howto for you.
+...then this might be the howto for you.
 
 Atomic hosts are made of regular, already-built RPMs, composed into trees with rpm-ostree. These trees are built into qcow2 images (or into installable ISOs, but I'm not covering that here, yet).
 
