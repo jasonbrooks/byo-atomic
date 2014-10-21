@@ -63,7 +63,9 @@ The compose step will take some time to complete. When it's done, you can run th
 # sh /run-apache.sh
 ````
 
-Now, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
+Now, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. 
+
+To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
 
 ````
 [remote "centos-atomic-host"]
@@ -72,11 +74,14 @@ branches=centos/7/x86_64/cloud-docker-host;
 gpg-verify=false
 ````
 
+````
+[remote "fedora-atomic-host"]
+url=http://$YOURHOSTIP:10080/repo
+branches=fedora-atomic/21/x86_64/docker-host;
+gpg-verify=false
+````
+
 With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
-
-
-
-
 
 
 ## Optional: Create your own Atomic image
@@ -120,8 +125,7 @@ This repository includes submodules that provide the *.json files maintained by 
 ### For CentOS 7:
 
 ````
-# cp /root/byo-atomic/sig-atomic-buildscripts/*.json /root/byo-atomic/c7/
-# cd /root/byo-atomic/c7
+# cd /root/byo-atomic/sig-atomic-buildscripts
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
 ````
 
@@ -132,11 +136,11 @@ This step will take a while to complete. When it's finished, you can move on to 
 # rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo centos-atomic-host centos/7/atomic/x86_64/cloud-docker-host centos-atomic.qcow2
 ````
 
-### For Fedora Rawhide:
+### For Fedora 21:
 
 ````
-# cp /root/byo-atomic/fedora-atomic/*.json /root/byo-atomic/f20/
-# cd /root/byo-atomic/f20
+# cd /root/byo-atomic/fedora-atomic
+# git checkout f21
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-docker-host.json
 ````
 
@@ -144,7 +148,7 @@ This step will take a while to complete. When it's finished, you can move on to 
 
 ````
 # export LIBGUESTFS_BACKEND=direct
-# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2
+# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/21/x86_64/server/docker-host f21-atomic.qcow2
 ````
 
 After you've created your image(s), future runs of the `rpm-ostree compose tree` command will add updated packages to your repo, which you can pull down to an Atomic instance. For more information on updating, see "Configuring your Atomic instance to receive updates," below.
@@ -189,37 +193,4 @@ Once you have completed your files, they need to packaged into an ISO image. For
 You can boot from this iso image, and the auth details it contains will be passed along to your Atomic instance.
 
 For more information about creating these cloud-init iso images, see http://cloudinit.readthedocs.org/en/latest/topics/datasources.html#config-drive.
-
-### Configuring your Atomic instance to receive updates
-
-As created using these instructions, your Atomic image won't be configured to receive updates. To configure your image to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
-
-````
-[remote "centos-atomic-host"]
-url=http://$YOUR_BUILD_MACHINE/repo
-branches=centos-atomic-/7/x86_64/server;
-gpg-verify=false
-````
-Or, for Fedora:
-
-````
-[remote "fedora-atomic-host"]
-url=http://$YOUR_BUILD_MACHINE/repo
-branches=fedora-atomic-/20/x86_64/server;
-gpg-verify=false
-````
-
-With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
-
-
-
-
-
-
-
-
-
-
-
-
 
