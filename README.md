@@ -26,8 +26,10 @@ If you're going to start with an existing Atomic host (for instance, one install
 
 Once inside the container:
 
+### For CentOS 7:
+
 ````
-# cd /byo-atomic/c7
+# cd /byo-atomic/sig-atomic-buildscripts
 ````
 
 If you'd like to add some more packages to your tree, add them in the file `centos-atomic-cloud-docker-host.json` before proceeding with the compose command:
@@ -36,6 +38,25 @@ If you'd like to add some more packages to your tree, add them in the file `cent
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-cloud-docker-host.json
 ````
 
+The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
+
+### For Fedora 21:
+
+The master branch of the fedora-atomic repo contains the definitions required to compose a rawhide-based Fedora Atomic host. If you'd rather compose a f21-based Fedora Atomic host, you'll need to:
+
+````
+# cd /byo-atomic/fedora-atomic
+# git checkout f21
+````
+
+If you'd like to add some more packages to your tree, add them in the file `fedora-atomic-docker-host.json` before proceeding with the compose command:
+
+````
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-docker-host.json
+````
+
+### For both Fedora and CentOS:
+ 
 The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
 
 ````
@@ -52,6 +73,10 @@ gpg-verify=false
 ````
 
 With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
+
+
+
+
 
 
 ## Optional: Create your own Atomic image
