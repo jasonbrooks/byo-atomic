@@ -126,7 +126,7 @@ This repository includes submodules that provide the *.json files maintained by 
 
 ````
 # cd /root/byo-atomic/sig-atomic-buildscripts
-# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-server-docker-host.json
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-cloud-docker-host.json
 ````
 
 This step will take a while to complete. When it's finished, you can move on to creating the disk image:
