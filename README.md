@@ -30,6 +30,8 @@ Once inside the container:
 
 ````
 # cd /byo-atomic/sig-atomic-buildscripts
+# git checkout master
+# git pull
 ````
 
 If you'd like to add some more packages to your tree, add them in the file `centos-atomic-cloud-docker-host.json` before proceeding with the compose command:
@@ -37,6 +39,8 @@ If you'd like to add some more packages to your tree, add them in the file `cent
 ````
 # rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-cloud-docker-host.json
 ````
+
+_The CentOS sig-atomic-buildscripts repo currently includes some key packages built in and hosted from the CentOS [Community Build System](http://cbs.centos.org/koji/). The CBS repos rebuild every 10 minutes, so if your rpm-ostree fails out w/ a repository not found sort of error, wait a few minutes and run the command again._
 
 The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
 
@@ -47,6 +51,7 @@ The master branch of the fedora-atomic repo contains the definitions required to
 ````
 # cd /byo-atomic/fedora-atomic
 # git checkout f21
+# git pull
 ````
 
 If you'd like to add some more packages to your tree, add them in the file `fedora-atomic-docker-host.json` before proceeding with the compose command:
