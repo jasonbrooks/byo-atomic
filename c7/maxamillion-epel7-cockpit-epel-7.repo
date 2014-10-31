@@ -1,6 +1,0 @@
-[maxamillion-epel7-cockpit]
-name=Copr repo for epel7-cockpit owned by maxamillion
-baseurl=http://copr-be.cloud.fedoraproject.org/results/maxamillion/epel7-cockpit/epel-7-$basearch/
-skip_if_unavailable=True
-gpgcheck=0
-enabled=1
