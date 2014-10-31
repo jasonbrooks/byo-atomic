@@ -30,6 +30,7 @@ Once inside the container:
 
 ````
 # cd /byo-atomic/sig-atomic-buildscripts
+# git checkout master
 ````
 
 If you'd like to add some more packages to your tree, add them in the file `centos-atomic-cloud-docker-host.json` before proceeding with the compose command:
