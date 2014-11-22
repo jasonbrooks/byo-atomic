@@ -42,8 +42,6 @@ If you'd like to add some more packages to your tree, add them in the file `cent
 
 _The CentOS sig-atomic-buildscripts repo currently includes some key packages built in and hosted from the CentOS [Community Build System](http://cbs.centos.org/koji/). The CBS repos rebuild every 10 minutes, so if your rpm-ostree fails out w/ a repository not found sort of error, wait a few minutes and run the command again._
 
-The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
-
 ### For Fedora 21:
 
 The master branch of the fedora-atomic repo contains the definitions required to compose a rawhide-based Fedora Atomic host. If you'd rather compose a f21-based Fedora Atomic host, you'll need to:
