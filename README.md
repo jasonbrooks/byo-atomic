@@ -151,7 +151,7 @@ This step will take a while to complete. When it's finished, you can move on to 
 
 ````
 # export LIBGUESTFS_BACKEND=direct
-# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/21/x86_64/server/docker-host f21-atomic.qcow2
+# rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/f21/x86_64/docker-host f21-atomic.qcow2
 ````
 
 After you've created your image(s), future runs of the `rpm-ostree compose tree` command will add updated packages to your repo, which you can pull down to an Atomic instance. For more information on updating, see "Configuring your Atomic instance to receive updates," below.
