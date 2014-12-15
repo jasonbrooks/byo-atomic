@@ -96,15 +96,20 @@ Disable selinux by changing `enforced` to `disabled` in `/etc/selinux/config` an
 The rpm-ostree commands below need to be run as root or w/ sudo, but for some reason, the image-building part of the process is only working for me while running as root (not sudo), so I log in as root and work in `/root`.
 
 ````
-# yum install -y git 
+# yum install -y git rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase
 # git clone --recursive https://github.com/jasonbrooks/byo-atomic.git
-# yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd firewalld
 ````
 
-Now, we'll set up a repository from which our eventual Atomic hosts will fetch upgrades:
+Initialize the ostree repository:
 
 ````
-# mkdir -p /srv/rpm-ostree/repo && cd /srv/rpm-ostree/ && sudo ostree --repo=repo init --mode=archive-z2
+# mkdir -p /srv/rpm-ostree/repo && ostree --repo=/srv/rpm-ostree/repo init --mode=archive-z2
+````
+
+Now, we'll set up hosting of the repository from which our eventual Atomic hosts will fetch upgrades (optional if only building images):
+
+````
+yum install -y httpd firewalld
 # cat > /etc/httpd/conf.d/rpm-ostree.conf <<EOF
 DocumentRoot /srv/rpm-ostree
 <Directory "/srv/rpm-ostree">
