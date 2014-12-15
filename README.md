@@ -109,7 +109,7 @@ Initialize the ostree repository:
 Now, we'll set up hosting of the repository from which our eventual Atomic hosts will fetch upgrades (optional if only building images):
 
 ````
-yum install -y httpd firewalld
+# yum install -y httpd firewalld
 # cat > /etc/httpd/conf.d/rpm-ostree.conf <<EOF
 DocumentRoot /srv/rpm-ostree
 <Directory "/srv/rpm-ostree">
