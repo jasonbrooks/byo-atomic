@@ -3,4 +3,4 @@
 	url = https://git.fedorahosted.org/git/fedora-atomic.git
 [submodule "sig-atomic-buildscripts"]
 	path = sig-atomic-buildscripts
-	url = https://github.com/centos/sig-atomic-buildscripts.git
+	url = https://github.com/jasonbrooks/sig-atomic-buildscripts.git
