@@ -19,25 +19,25 @@ If you're going to start with an existing Atomic host (for instance, one install
 ## Composing and hosting atomic updates 
 
 ````
-# git clone --recursive https://github.com/jasonbrooks/byo-atomic.git
+# git clone https://github.com/jasonbrooks/byo-atomic.git
 # docker build --rm -t $USER/atomicrepo byo-atomic/.
-# docker run -ti -p 80:10080 $USER/atomicrepo bash
+# docker run -d -p 80:10080 -name atomicrepo $USER/atomicrepo
+# docker exec -it atomicrepo bash 
 ````
 
-Once inside the container:
+Once inside the container, start by running 'nscd', which addresses an issue with how yum, when run through rpm-ostree, resolves repositories.
+
 
 ### For CentOS 7:
 
 ````
-# cd /byo-atomic/sig-atomic-buildscripts
-# git checkout master
-# git pull
+# cd sig-atomic-buildscripts
 ````
 
-If you'd like to add some more packages to your tree, add them in the file `centos-atomic-cloud-docker-host.json` before proceeding with the compose command:
+If you'd like to add some more packages to your tree, add them in the file `centos-atomic-host.json` before proceeding with the compose command:
 
 ````
-# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-cloud-docker-host.json
+# rpm-ostree compose tree --repo=/srv/rpm-ostree/repo centos-atomic-host.json
 ````
 
 _The CentOS sig-atomic-buildscripts repo currently includes some key packages built in and hosted from the CentOS [Community Build System](http://cbs.centos.org/koji/). The CBS repos rebuild every 10 minutes, so if your rpm-ostree fails out w/ a repository not found sort of error, wait a few minutes and run the command again._
@@ -47,9 +47,8 @@ _The CentOS sig-atomic-buildscripts repo currently includes some key packages bu
 The master branch of the fedora-atomic repo contains the definitions required to compose a rawhide-based Fedora Atomic host. If you'd rather compose a f21-based Fedora Atomic host, you'll need to:
 
 ````
-# cd /byo-atomic/fedora-atomic
+# cd fedora-atomic
 # git checkout f21
-# git pull
 ````
 
 If you'd like to add some more packages to your tree, add them in the file `fedora-atomic-docker-host.json` before proceeding with the compose command:
@@ -60,13 +59,7 @@ If you'd like to add some more packages to your tree, add them in the file `fedo
 
 ### For both Fedora and CentOS:
  
-The compose step will take some time to complete. When it's done, you can run the following command to start up a web server in the container. 
-
-````
-# sh /run-apache.sh
-````
-
-Now, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. 
+The compose step will take some time to complete. When it's done, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. 
 
 To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
 
@@ -88,6 +81,9 @@ With your repo configured, you can check for updates with the command `sudo rpm-
 
 
 ## Optional: Create your own Atomic image
+
+_This section is in need of update. Check out Brent Baude's [blog post](http://developerblog.redhat.com/2015/01/15/creating-custom-atomic-trees-images-and-installers-part-2/) for your image-building needs._
+
 
 First, build and configure the builder. Install Fedora 21 (Fedora 20 or CentOS 7 can work, too, but F21 includes the rpm-ostree packages we need by default, now, so that's what I'm using here). You can build trees and images for Fedora or CentOS from the same builder, and the versions don't have to match.
 
