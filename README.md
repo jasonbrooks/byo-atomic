@@ -25,7 +25,7 @@ If you're going to start with an existing Atomic host (for instance, one install
 # docker exec -it atomicrepo bash 
 ````
 
-Once inside the container, start by running 'nscd', which addresses an issue with how yum, when run through rpm-ostree, resolves repositories.
+Once inside the container, start by running `nscd`, which addresses an issue with how yum, when run through rpm-ostree, resolves repositories.
 
 
 ### For CentOS 7:
