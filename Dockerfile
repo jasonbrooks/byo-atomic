@@ -2,9 +2,10 @@ FROM fedora:21
 MAINTAINER "Jason Brooks" <jbrooks@redhat.com>
 
 
-RUN yum install deltarpm -y; yum clean all
-RUN yum -y update; yum clean all 
-RUN yum install -y git rpm-ostree nss-altfiles yum-plugin-protectbase httpd; yum clean all
+RUN yum update -y; \
+yum install -y pykickstart rpm-ostree-toolbox httpd git nscd; \
+yum clean all
+
 RUN git clone --recursive https://github.com/jasonbrooks/byo-atomic.git
 RUN mkdir -p /srv/rpm-ostree/repo && cd /srv/rpm-ostree/ && ostree --repo=repo init --mode=archive-z2
 ADD rpm-ostree.conf /etc/httpd/conf.d/
