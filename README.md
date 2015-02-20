@@ -21,7 +21,7 @@ If you're going to start with an existing Atomic host (for instance, one install
 ````
 # git clone https://github.com/jasonbrooks/byo-atomic.git
 # docker build --rm -t $USER/atomicrepo byo-atomic/.
-# docker run -d -p 80:10080 -name atomicrepo $USER/atomicrepo
+# docker run --privileged -d -p 80:10080 -name atomicrepo $USER/atomicrepo
 # docker exec -it atomicrepo bash 
 ````
 
