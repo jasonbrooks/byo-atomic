@@ -21,7 +21,7 @@ If you're going to start with an existing Atomic host (for instance, one install
 ````
 # git clone https://github.com/jasonbrooks/byo-atomic.git
 # docker build --rm -t $USER/atomicrepo byo-atomic/.
-# docker run --privileged -d -p 80:10080 -name atomicrepo $USER/atomicrepo
+# docker run --privileged -d -p 80:80 --name atomicrepo $USER/atomicrepo
 # docker exec -it atomicrepo bash 
 ````
 
@@ -59,25 +59,11 @@ If you'd like to add some more packages to your tree, add them in the file `fedo
 
 ### For both Fedora and CentOS:
  
-The compose step will take some time to complete. When it's done, you should be able to visit $YOURHOSTIP:10080/repo and see your new rpm-ostree repo. 
+The compose step will take some time to complete. When it's done, you should be able to visit $YOURHOSTIP/repo and see your new rpm-ostree repo. 
 
-To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/ostree/repo/config` and add a section like this:
+To configure an Atomic host to receive updates from your build machine, edit (as root) the file `/etc/ostree/remotes.d/centos-atomic.conf` or `/etc/ostree/remotes.d/fedora-atomic.conf` and replace the address in the line beginning with `url=` with your host IP. If `gpg-verify=true`, you'll need to change it to false.
 
-````
-[remote "centos-atomic-host"]
-url=http://$YOURHOSTIP:10080/repo
-branches=centos/7/x86_64/cloud-docker-host;
-gpg-verify=false
-````
-
-````
-[remote "fedora-atomic-host"]
-url=http://$YOURHOSTIP:10080/repo
-branches=fedora-atomic/21/x86_64/docker-host;
-gpg-verify=false
-````
-
-With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `rpm-ostree rollback`, followed by another reboot.
+With your repo configured, you can check for updates with the command `sudo rpm-ostree upgrade`, followed by a reboot. Don't like the changes? You can rollback with `sudo rpm-ostree rollback`, followed by another reboot.
 
 
 ## Optional: Create your own Atomic image
