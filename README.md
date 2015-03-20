@@ -104,6 +104,8 @@ EOF
 systemctl enable httpd &&
 systemctl start httpd &&
 systemctl reload httpd &&
+systemctl enable firewalld && 
+systemctl start firewalld &&
 firewall-cmd --add-service=http &&
 firewall-cmd --add-service=http --permanent
 ````
