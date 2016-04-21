@@ -12,6 +12,8 @@ Atomic hosts are made of regular, already-built RPMs, composed into trees with r
 
 ## Step One: prep a build machine
 
+*note: the Vagrantfile in this repo automates steps One and Two -- you can `vagrant up` a machine with the libvirt or virtualbox providers, `vagrant ssh` into the machine, and continue with step Three, if you wish. If you're intertested in just customizing a tree for use with an existing atomic host, you can run the whole thing from a container, check out the Dockerfile in this repo for that.*
+
 Start with a Fedora 23 machine, bare metal or VM (with nested virt enabled), and install some packages:
 
 ```
