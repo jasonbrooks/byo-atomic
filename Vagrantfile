@@ -44,6 +44,8 @@ curl -o fedora-23-updates.repo https://git.fedorahosted.org/cgit/fedora-repos.gi
 sed -i 's/\$releasever/23/g' fedora-23-updates.repo
 cd ..
 
+git clone https://github.com/CentOS/sig-atomic-buildscripts.git
+
 # get kickstarts
 
 git clone https://git.fedorahosted.org/git/spin-kickstarts.git
