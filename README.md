@@ -28,6 +28,8 @@ $ sudo systemctl enable polipo
 $ sudo systemctl start polipo
 $ sudo systemctl enable libvirtd
 $ sudo systemctl start libvirtd
+$ sudo systemctl enable docker
+$ sudo systemctl start docker
 ```
 
 Finally, do a bit of prep for the ostree tree we'll be composing, and create a build directory:
