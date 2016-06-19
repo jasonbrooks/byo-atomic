@@ -110,7 +110,7 @@ If you *do* want to build your own images, keep reading.
 **For Fedora 23:**
 
 ```
-$ GitDir=/home/vagrant/fedora-atomic; BuildDir=/home/vagrant/build; KsDir=/home/vagrant/spin-kickstarts; sudo rpm-ostree-toolbox imagefactory --overwrite --tdl ${GitDir}/fedora-atomic-f23.tdl -c  ${GitDir}/config.ini -i kvm -i vagrant-libvirt -i vagrant-virtualbox -k ${KsDir}/fedora-cloud-atomic.ks --vkickstart ${KsDir}/fedora-cloud-atomic-vagrant.ks -o ${BuildDir}/virt
+$ GitDir=/home/vagrant/fedora-atomic; BuildDir=/home/vagrant/build; KsDir=/home/vagrant/spin-kickstarts; sudo rpm-ostree-toolbox imagefactory --overwrite --tdl ${GitDir}/fedora-atomic-f23.tdl -c  ${GitDir}/config.ini -i kvm -i vagrant-libvirt -i vagrant-virtualbox -k ${KsDir}/fedora-cloud-atomic.ks --vkickstart ${KsDir}/fedora-cloud-atomic-vagrant.ks --ostreerepo ${BuildDir}/repo -o ${BuildDir}/virt
 ```
 
 **For CentOS 7:**
