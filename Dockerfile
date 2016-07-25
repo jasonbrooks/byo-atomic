@@ -1,4 +1,4 @@
-FROM fedora:23
+FROM fedora:24
 
 # install needed packages
 
@@ -13,9 +13,10 @@ RUN mkdir -p /home/working; \
     cd sig-atomic-buildscripts; \
     git checkout downstream; \
     cd ..; \
-    git clone https://git.fedorahosted.org/git/fedora-atomic.git; \
+    git clone https://pagure.io/fedora-atomic.git; \
     cd fedora-atomic; \
-    git checkout f23; \
+    git checkout f24; \
+    sed -i 's/\"fedora-24\"/\"fedora-24\", \"fedora-24-updates\"/g' fedora-atomic-docker-host.json; \
 
 # create and initialize repo directory
 
@@ -35,7 +36,7 @@ CMD polipo; pushd /srv/repo; python -m SimpleHTTPServer; popd
 # Build and run this container with:
 # 
 # docker build --rm -t $USER/atomicrepo .
-# docker run --privileged -d -p 8000:8000 --name atomicrepo $USER/atomicrepo
+# docker run -d -p 8000:8000 --name atomicrepo $USER/atomicrepo
 # docker exec -it atomicrepo bash 
 # 
 # Inside the container, mod tree file as described in Step Three of 
