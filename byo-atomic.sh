@@ -30,7 +30,6 @@ fi
 dnf update -y
 sudo dnf copr enable -y jasonbrooks/rpm-ostree-toolbox
 dnf install -y git docker polipo rpm-ostree-toolbox libvirt createrepo
-dnf update -y imagefactory* --enablerepo=updates-testing
 
 # turn on polipo & libvirt
 
