@@ -2,7 +2,7 @@
 
 # working dir
 
-working_dir="/home/fedora/working"
+working_dir="$HOME/working"
 
 # what's your base distro and version
 
@@ -27,27 +27,27 @@ fi
 
 # install updates and needed packages
 
-dnf update -y
+sudo dnf update -y
 sudo dnf copr enable -y jasonbrooks/rpm-ostree-toolbox
-dnf install -y git docker polipo rpm-ostree-toolbox libvirt createrepo wget
+sudo dnf install -y git docker polipo rpm-ostree-toolbox libvirt createrepo wget
 
 # turn on polipo & libvirt
 
-systemctl enable polipo
-systemctl start polipo
-systemctl enable libvirtd
-systemctl start libvirtd
-systemctl start virtlogd 
+sudo systemctl enable polipo
+sudo systemctl start polipo
+sudo systemctl enable libvirtd
+sudo systemctl start libvirtd
+sudo systemctl start virtlogd 
 
 # set up for docker
 
-sed -i "s/^DOCKER_STORAGE_OPTIONS.*/DOCKER_STORAGE_OPTIONS=\"-s overlay\"/g" /etc/sysconfig/docker-storage
+sudo sed -i "s/^DOCKER_STORAGE_OPTIONS.*/DOCKER_STORAGE_OPTIONS=\"-s overlay\"/g" /etc/sysconfig/docker-storage
 
-sed -i "s/--selinux-enabled//g" /etc/sysconfig/docker
+sudo sed -i "s/--selinux-enabled//g" /etc/sysconfig/docker
 
-sed -i "s/^# setsebool -P docker_transition_unconfined 1/setsebool -P docker_transition_unconfined 1/g" /etc/sysconfig/docker
+sudo sed -i "s/^# setsebool -P docker_transition_unconfined 1/setsebool -P docker_transition_unconfined 1/g" /etc/sysconfig/docker
 
-systemctl enable docker --now
+sudo systemctl enable docker --now
 
 mkdir -p $working_dir
 cd $working_dir
@@ -74,15 +74,14 @@ fi
 
 # initialize ostree repo
 
-mkdir -p /srv/repo
-ostree --repo=/srv/repo init --mode=archive-z2
+sudo mkdir -p /srv/repo
+sudo ostree --repo=/srv/repo init --mode=archive-z2
 
 # mirror ostree repo
-echo $base_distro
 if [ $base_distro = "centos" ]; then
-  ostree remote add --repo=/srv/repo centos-atomic-host --set=gpg-verify=false http://mirror.centos.org/centos/7/atomic/x86_64/repo && ostree pull --depth=0 --repo=/srv/repo --mirror centos-atomic-host centos-atomic-host/7/x86_64/standard
+  sudo ostree remote add --repo=/srv/repo centos-atomic-host --set=gpg-verify=false http://mirror.centos.org/centos/7/atomic/x86_64/repo && sudo ostree pull --depth=0 --repo=/srv/repo --mirror centos-atomic-host centos-atomic-host/7/x86_64/standard
 elif [ $base_distro = "fedora" ]; then
-  ostree remote add --repo=/srv/repo fedora-atomic --set=gpg-verify=false https://dl.fedoraproject.org/pub/fedora/linux/atomic/${distro_version:1}/ && ostree pull --depth=0 --repo=/srv/repo --mirror fedora-atomic fedora-atomic/${distro_version:1}/x86_64/docker-host
+  sudo ostree remote add --repo=/srv/repo fedora-atomic --set=gpg-verify=false https://dl.fedoraproject.org/pub/fedora/linux/atomic/${distro_version:1}/ && sudo ostree pull --depth=0 --repo=/srv/repo --mirror fedora-atomic fedora-atomic/${distro_version:1}/x86_64/docker-host
 fi
 
 # create a build dir
@@ -97,15 +96,15 @@ cd ..
 mkdir -p ${working_dir}/build/installer/images/images/pxeboot
 
 if [ $base_distro = "centos" ]; then
-  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -e robtos=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
 elif [ $base_distro = "fedora" ]; then
-  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
 fi
 
 # SimpleHTTPServer to host local bits
 # (from https://gist.github.com/funzoneq/737cd5316e525c388d51877fb7f542de)
 
-cat <<EOF >/etc/systemd/system/simplehttp.service
+sudo cat <<EOF >/etc/systemd/system/simplehttp.service
 [Unit]
 Description=Job that runs the python SimpleHTTPServer daemon
 Documentation=man:SimpleHTTPServer(1)
@@ -122,7 +121,7 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 
-systemctl enable simplehttp --now
+sudo systemctl enable simplehttp --now
 }
 
 tree() {
