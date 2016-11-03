@@ -91,27 +91,17 @@ cd build
 ln -s /srv/repo/ repo
 cd ..
 
-# mirror installer
-
-mkdir -p ${working_dir}/build/installer/images/images/pxeboot
-
-if [ $base_distro = "centos" ]; then
-  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -e robtos=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
-elif [ $base_distro = "fedora" ]; then
-  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
-fi
-
 # SimpleHTTPServer to host local bits
 # (from https://gist.github.com/funzoneq/737cd5316e525c388d51877fb7f542de)
 
-sudo cat <<EOF >/etc/systemd/system/simplehttp.service
+sudo tee -a /etc/systemd/system/simplehttp.service <<'EOF'
 [Unit]
 Description=Job that runs the python SimpleHTTPServer daemon
 Documentation=man:SimpleHTTPServer(1)
 
 [Service]
 Type=simple
-WorkingDirectory=${working_dir}/build
+WorkingDirectory=
 ExecStart=/usr/bin/python -m SimpleHTTPServer 8000 &
 ExecStop=/bin/kill `/bin/ps aux | /bin/grep SimpleHTTPServer | /bin/grep -v grep | /usr/bin/awk '{ print $2 }'`
 Restart=always
@@ -121,7 +111,19 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 
+sudo sed -i "s#^WorkingDirectory.*#WorkingDirectory=${working_dir}/build#g" /etc/systemd/system/simplehttp.service
+
 sudo systemctl enable simplehttp --now
+
+# mirror installer
+
+mkdir -p ${working_dir}/build/installer/images/images/pxeboot
+
+if [ $base_distro = "centos" ]; then
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -e robtos=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
+elif [ $base_distro = "fedora" ]; then
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -nc -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -nc -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
+fi
 }
 
 tree() {
