@@ -29,7 +29,7 @@ fi
 
 dnf update -y
 sudo dnf copr enable -y jasonbrooks/rpm-ostree-toolbox
-dnf install -y git docker polipo rpm-ostree-toolbox libvirt createrepo
+dnf install -y git docker polipo rpm-ostree-toolbox libvirt createrepo wget
 
 # turn on polipo & libvirt
 
@@ -41,10 +41,12 @@ systemctl start virtlogd
 
 # set up for docker
 
-systemctl start lvm2-lvmetad.service
-echo DEVS="/dev/vdb" > /etc/sysconfig/docker-storage-setup
-echo VG="docker" >> /etc/sysconfig/docker-storage-setup
-docker-storage-setup
+sed -i "s/^DOCKER_STORAGE_OPTIONS.*/DOCKER_STORAGE_OPTIONS=\"-s overlay\"/g" /etc/sysconfig/docker-storage
+
+sed -i "s/--selinux-enabled//g" /etc/sysconfig/docker
+
+sed -i "s/^# setsebool -P docker_transition_unconfined 1/setsebool -P docker_transition_unconfined 1/g" /etc/sysconfig/docker
+
 systemctl enable docker --now
 
 mkdir -p $working_dir
@@ -75,7 +77,7 @@ fi
 mkdir -p /srv/repo
 ostree --repo=/srv/repo init --mode=archive-z2
 
-# mirror centos repo
+# mirror ostree repo
 echo $base_distro
 if [ $base_distro = "centos" ]; then
   ostree remote add --repo=/srv/repo centos-atomic-host --set=gpg-verify=false http://mirror.centos.org/centos/7/atomic/x86_64/repo && ostree pull --depth=0 --repo=/srv/repo --mirror centos-atomic-host centos-atomic-host/7/x86_64/standard
@@ -89,6 +91,16 @@ mkdir build
 cd build
 ln -s /srv/repo/ repo
 cd ..
+
+# mirror installer
+
+mkdir -p ${working_dir}/build/installer/images/images/pxeboot
+
+if [ $base_distro = "centos" ]; then
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
+elif [ $base_distro = "fedora" ]; then
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
+fi
 
 # SimpleHTTPServer to host local bits
 # (from https://gist.github.com/funzoneq/737cd5316e525c388d51877fb7f542de)
