@@ -72,6 +72,36 @@ The contents of an rpm-ostree tree are defined in one of the json files we grabb
 
 For example, to produce a version of the Fedora Atomic or CentOS Atomic tree that adds the fortune command, edit either `fedora-atomic/fedora-atomic-docker-host.json` or `sig-atomic-buildscripts/centos-atomic-host.json`, and, in the file's `"packages":` section, insert a line like this: `"fortune-mod",`.
 
+If you want to add an RPM that is not already available in a repo, you can create your own custom repo that contains the RPM.
+
+1\.  Install the `createrepo` tool.  Something like, `yum install /usr/bin/createrepo`
+
+2\.  Create a directory for your local repo.  We'll use `/srv/local-repo`
+
+3\.  Place the RPM in the repo directory.  The repo could contain multiple RPMs, but our example only uses one.  `/srv/local-repo/foobar-1.0.0.x86_64.rpm`
+
+4\.  Run `createrepo /srv/local-repo`
+
+5\.  Create a repo file and place in the same directory as your manifest JSON file.
+
+```
+# cat local.repo
+[local-repo]
+name=Local repo
+baseurl=file:///srv/local-repo/
+enabled=1
+gpgcheck=0
+```
+
+6\.  Edit the manifest JSON file and include the name of the newly created repo to the `repos` list.  For example, the [centos-atomic-host.json](https://github.com/CentOS/sig-atomic-buildscripts/blob/master/centos-atomic-host.json) would have the `repos` list edited to include our `local-repo`:
+
+```
+    "repos": ["CentOS-Base", "CentOS-updates", "CentOS-extras",
+              "virt7-docker-el-candidate", "atomic7-testing",
+              "rhel-atomic-rebuild", "CentOS-CR", "local-repo"],
+```
+
+7\.  Additionally, edit the `packages` list to include the name of the RPM in your local repo.  In our example, the name of the RPM is `foobar`.
 
 ## Step Four: compose the tree
 
@@ -95,7 +125,7 @@ $ GitDir=/home/vagrant/sig-atomic-buildscripts; sudo rpm-ostree compose tree --r
 
 Before we continue with the image building, note that you don't have to build your own images to have a custom Atomic host. You can compose your own updates and apply them, or even rebase to a completely different tree. I've rebased between CentOS and Fedora, for instance.
 
-If you're going to start with an existing Atomic host (for instance, the ones behind [the buttons here](http://www.projectatomic.io/download/), you can compose and serve up a new tree from a Docker container running on that very image, or from any web server. 
+If you're going to start with an existing Atomic host (for instance, the ones behind [the buttons here](http://www.projectatomic.io/download/), you can compose and serve up a new tree from a Docker container running on that very image, or from any web server.
 
 In this case, you could rsync `/srv/repo` to a web server or do something like `cd /srv/repo && python -m SimpleHTTPServer 8080 &` to host the repo right from where we built it. Then, to configure an existing Atomic host to receive updates from your build machine, you could run a pair of commands like the following to add a new `withfortune` repo definition to your host, and then rebase to that tree:
 
@@ -149,7 +179,7 @@ Your atomic images will be born with no root password, so it's necessary to supp
 
 To create this iso image, you must first create two text files.
 
-Create a file named "meta-data" that includes an "instance-id" name and a "local-hostname." For instance: 
+Create a file named "meta-data" that includes an "instance-id" name and a "local-hostname." For instance:
 
 ````
 instance-id: Atomic0
