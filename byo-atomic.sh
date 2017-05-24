@@ -120,7 +120,7 @@ sudo systemctl enable simplehttp --now
 mkdir -p ${working_dir}/build/installer/images/images/pxeboot
 
 if [ $base_distro = "centos" ]; then
-  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -e robtos=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
+  wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/images/pxeboot/ && wget -P ${working_dir}/build/installer/images/LiveOS/ -r -nH -nd -nc -np -e robots=off -R index.html* https://ci.centos.org/artifacts/sig-atomic/downstream/installer/images/LiveOS/
 elif [ $base_distro = "fedora" ]; then
   wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -nc -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/releases/${distro_version:1}/Everything/x86_64/os/images/install.img || wget -P ${working_dir}/build/installer/images/images/pxeboot/ -r -nH -nd -nc -np -R index.html* http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/pxeboot/ && wget -nc -P ${working_dir}/build/installer/images/images/ http://dl.fedoraproject.org/pub/fedora/linux/development/${distro_version:1}/Everything/x86_64/os/images/install.img
 fi
